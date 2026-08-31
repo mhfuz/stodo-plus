@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>StoDo+ V31</title>
+<title>StoDo+ V32</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#101114;color:#f5f5f5;font-family:Arial,sans-serif}
 header{padding:20px 16px 12px;position:sticky;top:0;background:#101114;z-index:3}
@@ -367,7 +367,7 @@ select,input{
 <input id="importFile" type="file" accept="application/json" onchange="importBackup(event)">
 </label>
 </div>
-<div class="card"><div class="title">ملاحظة</div><p class="muted">هذه نسخة StoDoPlus_v31 تجريبية. أُضيف نظام كشف أخطاء برمجية فوري (صندوق أحمر يظهر تفاصيل أي عطل تقني بدل الفشل الصامت) — يساعدنا نلقط أي مشكلة برمجية حقيقية بسرعة.</p></div>
+<div class="card"><div class="title">ملاحظة</div><p class="muted">هذه نسخة StoDoPlus_v32. تم إصلاح خطأ برمجي حقيقي قديم كان يوقف تحديث الشاشة بصمت بعد كل تسجيل دخول (يشير لعنصر محذوف اسمه safeLog) — هذا هو السبب الحقيقي وراء اختفاء المصروفات وعدم تحديث بعض التقارير طوال الوقت. نظام كشف الأخطاء الأحمر لسه موجود لأي مشكلة مستقبلية.</p></div>
 </section>
 
 </main>
@@ -1046,7 +1046,7 @@ function renderPeople(){
  const box=$('peopleList');
  if(!box)return;
  box.innerHTML=(db.persons||[]).map((p,i)=>
- `<div class="row">
+`<div class="row">
  <span>${p.name}${p.active===false?' <small>(معطّل)</small>':''}<br><small>${p.branchId}</small></span>
  <span>
  <button class="secondary" onclick="editPerson(${i})">✏️</button>
@@ -1241,10 +1241,9 @@ function render(){
    '<span class="badge">'+
    (r?(r.diff===0?'✅ مطابق':r.diff<0?'🔴 عجز':'🟢 زيادة'):'⏳ لم يُقفل')+'</span></span></div>';
  }).join('');
- $('safeBalance').textContent=money(safe);
- $('safeLog').innerHTML=db.closes.filter(r=>r.safe>0).map(r=>
-   '<div class="row"><span>'+r.branch+'<br><small>'+r.date+'</small></span><b>'+money(r.safe)+'</b></div>'
- ).join('')||'لا توجد حركات.';
+ // ملاحظة: safeBalance/transferCount/transferRows تُحدَّث فعليًا داخل renderTransfers() بالأعلى.
+ // (السطر القديم اللي كان يحاول يحدّث عنصر 'safeLog' غير الموجود بالصفحة — وهو سبب توقف
+ // render() بصمت من زمان — تم حذفه هنا.)
  $('expenseLog').innerHTML=db.expenses.map(r=>
    '<div class="row"><span>'+r.branch+' — '+r.type+'<br><small>'+r.date+(r.note?' — '+r.note:'')+
    '</small></span><b>'+money(r.amount)+'</b></div>'
